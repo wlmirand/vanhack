@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.vanhack.wafer.R;
+import com.vanhack.wafer.model.Country;
+
+import java.util.List;
 
 /**
  * Main Activity class
@@ -28,11 +31,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     /**
-     * Once the ApiModule finish it's Job, notify the View here
-     * TODO It will need pass a parameter containing the result
+     * Once the Presenter finish its Job, notify the View here
      */
     @Override
-    public void updateView() {
-
+    public void updateView(List<Country> countryList) {
+        //We have our result, lets fill the UI
     }
 }

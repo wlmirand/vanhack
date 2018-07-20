@@ -1,5 +1,7 @@
 package com.vanhack.wafer.viewpresenter;
 
+import com.vanhack.wafer.api.Api;
+
 /**
  * Base Presenter class. We ensure it has a View
  * Also, we'll define our API instance here, because different Presenters often
@@ -11,10 +13,10 @@ public class BasePresenter<T extends BaseView> {
     protected final T mView;
 
     //Provides access to the APIs
-    //protected final SomeApiClass mApi;
+    protected final Api mApi;
 
     public BasePresenter(T view) {
         mView = view;
-        //mApi = Api reference.... normally a singleton. It also can be Injected
+        mApi = Api.getInstance();
     }
 }
