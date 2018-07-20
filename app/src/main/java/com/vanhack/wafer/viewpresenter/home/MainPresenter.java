@@ -86,15 +86,24 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         List<String> languages = new ArrayList<>();
 
         //on JSON, we have the name attribute: { "name": "<COUNTRY_NAME>"
-        Log.d("BRUTUS", json);
-        Pattern pattern = Pattern.compile("(\\{\\s*\"name\":\\s*\"\\w+\")");
+        //Pattern pattern = Pattern.compile("\\{(\"name\":?[^\\],)]*)|(\"currencies\":[^\\])]*)|(\"languages\":[^\\])]*)");
+        Pattern pattern = Pattern.compile("(\\{\"name\":?[^,]*)");
         Matcher matcher = pattern.matcher(json);
 
         //while matches, filter and add to the list
         while (matcher.find()) {
             String countryName = matcher.group(0);
-            countryName = countryName.replaceAll("\\{\\s*\"name\":", "").replace("\"", "");
-            countries.add(countryName);
+            //countryName = countryName.replaceAll("\\{\\s*\"name\":", "").replace("\"", "");
+            //countries.add(countryName);
+
+            /*
+            String currency = matcher.group(1);
+            String language = matcher.group(2);
+            */
+
+            Log.d("BRUTUS", countryName);
+
+            //Log.d("BRUTUS", countryName + currency + language);
         }
 
         return null;
