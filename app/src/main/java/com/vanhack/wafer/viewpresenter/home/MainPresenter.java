@@ -8,7 +8,10 @@ import com.vanhack.wafer.model.Country;
 import com.vanhack.wafer.viewpresenter.BasePresenter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Presenter to handle MainActivity's business logic
@@ -71,7 +74,29 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
      * @return
      */
     private List<Country> parseJson(String json) {
-        //TODO Parse the JSON
+        /*
+            In this challenge, we need to show only some simple information
+            so my strategy will use Regular Expression to find only the piece of information
+            that is really needed (Name, Language and Currency).
+         */
+
+        //initialize our Lists to store the fields
+        List<String> countries = new ArrayList<>();
+        List<String> currencies = new ArrayList<>();
+        List<String> languages = new ArrayList<>();
+
+        //on JSON, we have the name attribute: { "name": "<COUNTRY_NAME>"
+        Log.d("BRUTUS", json);
+        Pattern pattern = Pattern.compile("(\\{\\s*\"name\":\\s*\"\\w+\")");
+        Matcher matcher = pattern.matcher(json);
+
+        //while matches, filter and add to the list
+        while (matcher.find()) {
+            String countryName = matcher.group(0);
+            countryName = countryName.replaceAll("\\{\\s*\"name\":", "").replace("\"", "");
+            countries.add(countryName);
+        }
+
         return null;
     }
 }
