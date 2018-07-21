@@ -23,6 +23,11 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
         mData = list;
     }
 
+    public void remove(int position) {
+        mData.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @NonNull
     @Override
     public CountryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,13 +52,19 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
      */
     static class CountryViewHolder extends RecyclerView.ViewHolder {
 
+        //Layer Views
+        private final View mBackgroundView;
+        private final View mForegroundView;
+
+        //UI Elements
         private final TextView mName;
         private final TextView mCurrency;
         private final TextView mLanguage;
 
         public CountryViewHolder(View itemView) {
             super(itemView);
-
+            mBackgroundView = itemView.findViewById(R.id.background);
+            mForegroundView = itemView.findViewById(R.id.foreground);
             mName = itemView.findViewById(R.id.name);
             mCurrency = itemView.findViewById(R.id.currency);
             mLanguage = itemView.findViewById(R.id.language);
@@ -64,5 +75,14 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
             mCurrency.setText(country.getCurrency());
             mLanguage.setText(country.getLanguage());
         }
+
+        View getBackgroundView() {
+            return mBackgroundView;
+        }
+
+        View getForegroundView() {
+            return mForegroundView;
+        }
+
     }
 }
