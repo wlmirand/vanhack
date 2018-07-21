@@ -2,9 +2,10 @@ package com.vanhack.wafer.viewpresenter.home;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.vanhack.wafer.R;
 import com.vanhack.wafer.model.Country;
@@ -18,7 +19,10 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
+    //Our Presenter
     private MainPresenter mPresenter;
+
+    //UI Components
     private RecyclerView recyclerView;
 
     @Override
@@ -29,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         //Get our UI components
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         //Cannot use something like Dagger, so we instantiate the
         // Presenter here, passing this view as a parameter
