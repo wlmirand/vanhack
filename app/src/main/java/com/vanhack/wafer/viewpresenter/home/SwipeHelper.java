@@ -3,10 +3,7 @@ package com.vanhack.wafer.viewpresenter.home;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.View;
-
-import java.util.Date;
 
 /**
  * Helper class to Handle swipe events.
@@ -17,9 +14,11 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
     /**
      * While we are creating this new class, the Delete should not be handled here.
      * So we make the Activity to implement this interface to handle the Swipe event
+     * Also, we have the event to clear the other Swipes
      */
     public interface SwipeListener {
-        void onSwiped(RecyclerView.ViewHolder viewHolder);
+        void clearSwipes(RecyclerView.ViewHolder viewHolder);
+        void delete(RecyclerView.ViewHolder viewHolder);
     }
 
     //Someone who cares about swipe event
@@ -75,14 +74,19 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
     }
 
     /**
-     * This callback is called when the Swipe is done and the ViewHolder goes away
-     * By the rules, we need to delete the row, so lets call the listener to get the job done
+     * This callback is called when the Swipe is completed
      * @param viewHolder
      * @param direction
      */
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        mListener.onSwiped(viewHolder);
+        //By default, clear the other swipes
+        mListener.clearSwipes(viewHolder);
+
+        //delete if needed
+        if ("remove".equals(viewHolder.itemView.getTag())) {
+            mListener.delete(viewHolder);
+        }
     }
 
     /**
@@ -125,6 +129,12 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
         //do it for the foreground
         if (viewHolder != null) {
             final View foregroundView = ((CountryAdapter.CountryViewHolder) viewHolder).getForegroundView();
+
+            //mark for removal
+            if (Math.abs(dX) > viewHolder.itemView.getWidth()) {
+                viewHolder.itemView.setTag("remove");
+            }
+
             getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX/3, dY, actionState, isCurrentlyActive);
         }
     }
@@ -149,6 +159,6 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
      */
     @Override
     public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
-        return 1.1f;
+        return 1f;
     }
 }

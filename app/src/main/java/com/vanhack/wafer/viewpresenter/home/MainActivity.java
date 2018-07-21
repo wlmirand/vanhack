@@ -8,8 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.vanhack.wafer.R;
 import com.vanhack.wafer.model.Country;
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder) {
+    public void clearSwipes(RecyclerView.ViewHolder viewHolder) {
         //Reset all other swipes
         CountryAdapter adapter = (CountryAdapter) recyclerView.getAdapter();
         for (int i=0 ; i<adapter.getItemCount() ; i++) {
@@ -78,8 +76,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 adapter.notifyItemChanged(i);
             }
         }
+    }
 
+    @Override
+    public void delete(RecyclerView.ViewHolder viewHolder) {
         //Delete the holder
-        //((CountryAdapter) recyclerView.getAdapter()).remove(viewHolder.getAdapterPosition());
+        ((CountryAdapter) recyclerView.getAdapter()).remove(viewHolder.getAdapterPosition());
     }
 }
