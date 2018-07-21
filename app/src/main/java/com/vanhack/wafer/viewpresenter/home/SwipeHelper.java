@@ -3,14 +3,17 @@ package com.vanhack.wafer.viewpresenter.home;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
+
+import java.util.Date;
 
 /**
  * Helper class to Handle swipe events.
  * We could override this inline, but the code would get ugly
  */
+//public class SwipeHelper extends ItemTouchHelper.Callback {
 public class SwipeHelper extends ItemTouchHelper.Callback {
-
     /**
      * While we are creating this new class, the Delete should not be handled here.
      * So we make the Activity to implement this interface to handle the Swipe event
@@ -21,6 +24,9 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
 
     //Someone who cares about swipe event
     private SwipeListener mListener;
+
+    private float mLastDX = 0;
+    private long mLastTimestamp = 0;
 
     public SwipeHelper(SwipeListener listener) {
         mListener = listener;
@@ -102,6 +108,8 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
 
     /**
      * Callback called when the view is being drawed
+     * If we needed to support Honeycomb (API Level 11) or lower, we had to do the same for
+     * onChildDrawOver callback
      * @param c
      * @param recyclerView
      * @param viewHolder
@@ -117,29 +125,7 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
         //do it for the foreground
         if (viewHolder != null) {
             final View foregroundView = ((CountryAdapter.CountryViewHolder) viewHolder).getForegroundView();
-            getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
-        }
-    }
-
-    /**
-     * Callback called when the view is being drawed
-     * Same as before, but its needed for Honeycomb or before
-     * @param c
-     * @param recyclerView
-     * @param viewHolder
-     * @param dX
-     * @param dY
-     * @param actionState
-     * @param isCurrentlyActive
-     */
-    @Override
-    public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
-                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                                int actionState, boolean isCurrentlyActive) {
-        //do it for the foreground
-        if (viewHolder != null) {
-            final View foregroundView = ((CountryAdapter.CountryViewHolder) viewHolder).getForegroundView();
-            getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+            getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX/3, dY, actionState, isCurrentlyActive);
         }
     }
 
@@ -154,5 +140,15 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
             final View foregroundView = ((CountryAdapter.CountryViewHolder) viewHolder).getForegroundView();
             getDefaultUIUtil().clearView(foregroundView);
         }
+    }
+
+    /**
+     * Return the %% of viewHolder we must move to swipe
+     * @param viewHolder
+     * @return
+     */
+    @Override
+    public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
+        return 1.1f;
     }
 }

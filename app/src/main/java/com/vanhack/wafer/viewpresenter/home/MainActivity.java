@@ -7,6 +7,9 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.vanhack.wafer.R;
 import com.vanhack.wafer.model.Country;
@@ -37,6 +40,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         //Add our animator and the divider
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setOnFlingListener(new RecyclerView.OnFlingListener() {
+            @Override
+            public boolean onFling(int velocityX, int velocityY) {
+                Log.d("BRUTUS", "onFling");
+                return false;
+            }
+        });
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         //Swipe
@@ -61,6 +71,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder) {
-        ((CountryAdapter) recyclerView.getAdapter()).remove(viewHolder.getAdapterPosition());
+        //Reset all other swipes
+        CountryAdapter adapter = (CountryAdapter) recyclerView.getAdapter();
+        for (int i=0 ; i<adapter.getItemCount() ; i++) {
+            if (viewHolder.getAdapterPosition() != i) {
+                adapter.notifyItemChanged(i);
+            }
+        }
+
+        //Delete the holder
+        //((CountryAdapter) recyclerView.getAdapter()).remove(viewHolder.getAdapterPosition());
     }
 }
