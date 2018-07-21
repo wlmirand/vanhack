@@ -1,17 +1,18 @@
 package com.vanhack.wafer.viewpresenter.home;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.vanhack.wafer.api.Api;
 import com.vanhack.wafer.model.Country;
 import com.vanhack.wafer.viewpresenter.BasePresenter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Presenter to handle MainActivity's business logic
@@ -75,37 +76,46 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
      */
     private List<Country> parseJson(String json) {
         /*
-            In this challenge, we need to show only some simple information
-            so my strategy will use Regular Expression to find only the piece of information
-            that is really needed (Name, Language and Currency).
-         */
+            On Java, we can use the org.json package that is embedded.
+            Since this is already build in (not need to add dependencies at Gradle) I'll use it.
+            But if I had to implement, I'd use regex to match patterns and extract only the
+            Data we need to show.
+        */
+        try {
+            List<Country> list = new ArrayList<>();
 
-        //initialize our Lists to store the fields
-        List<String> countries = new ArrayList<>();
-        List<String> currencies = new ArrayList<>();
-        List<String> languages = new ArrayList<>();
+            //Our request returns an array of countries, so lets starting the Array
+            JSONArray jsonArray = new JSONArray(json);
 
-        //on JSON, we have the name attribute: { "name": "<COUNTRY_NAME>"
-        //Pattern pattern = Pattern.compile("\\{(\"name\":?[^\\],)]*)|(\"currencies\":[^\\])]*)|(\"languages\":[^\\])]*)");
-        Pattern pattern = Pattern.compile("(\\{\"name\":?[^,]*)");
-        Matcher matcher = pattern.matcher(json);
+            //Lets iterate our array to get the information we need
+            for (int i=0 ; i<jsonArray.length() ; i++) {
+                //Name, just retrieve it
+                JSONObject jsonCountry = (JSONObject)jsonArray.get(i);
+                String countryName = (String) jsonCountry.get("name");
 
-        //while matches, filter and add to the list
-        while (matcher.find()) {
-            String countryName = matcher.group(0);
-            //countryName = countryName.replaceAll("\\{\\s*\"name\":", "").replace("\"", "");
-            //countries.add(countryName);
+                //If exists, get only the first currency name
+                JSONArray currencyArray = (JSONArray) jsonCountry.get("currencies");
+                String currencyName = null;
+                if (currencyArray.length() != 0) {
+                    currencyName = (String) ((JSONObject) currencyArray.get(0)).get("name");
+                }
 
-            /*
-            String currency = matcher.group(1);
-            String language = matcher.group(2);
-            */
+                //If exists, get only the first language name
+                JSONArray languagesArray = (JSONArray) jsonCountry.get("languages");
+                String languageName = null;
+                if (languagesArray.length() != 0) {
+                    languageName = (String) ((JSONObject) languagesArray.get(0)).get("name");
+                }
 
-            Log.d("BRUTUS", countryName);
+                //create the object and add it to the list
+                list.add(new Country(countryName, currencyName, languageName));
+            }
 
-            //Log.d("BRUTUS", countryName + currency + language);
+            return list;
+        } catch (JSONException e) {
+            //Probably we got a bad json
+            e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 }

@@ -24,15 +24,20 @@ public class Country {
         this.mLanguage = language;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public String getmCurrency() {
+    public String getCurrency() {
         return mCurrency;
     }
 
-    public String getmLanguage() {
+    public String getLanguage() {
         return mLanguage;
+    }
+
+    @Override
+    public String toString() {
+        return mName + " - " + mCurrency + " - " + mLanguage;
     }
 }
